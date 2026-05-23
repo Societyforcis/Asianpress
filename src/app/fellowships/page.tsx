@@ -61,6 +61,22 @@ export default function Fellowships() {
     }
   }, [formData.country]);
 
+  useEffect(() => {
+    if (formData.collegeName) {
+      const selectedObj = availableColleges.find(c => c.collegeName === formData.collegeName);
+      const labs = selectedObj?.researchLabs || [];
+      if (labs.length === 0) {
+        setFormData(prev => ({ ...prev, researchLab: "No Approved Research Labs" }));
+      } else {
+        if (formData.researchLab === "No Approved Research Labs" || !labs.includes(formData.researchLab)) {
+          setFormData(prev => ({ ...prev, researchLab: "" }));
+        }
+      }
+    } else {
+      setFormData(prev => ({ ...prev, researchLab: "" }));
+    }
+  }, [formData.collegeName, availableColleges]);
+
   const scrollToForm = () => {
     document.getElementById("apply-form")?.scrollIntoView({ behavior: "smooth" });
   };
@@ -346,33 +362,43 @@ export default function Fellowships() {
                   const selectedCollegeObj = availableColleges.find(c => c.collegeName === formData.collegeName);
                   const currentLabs = selectedCollegeObj?.researchLabs || [];
                   
-                  if (currentLabs.length > 0) {
+                  if (!formData.collegeName) {
                     return (
                       <select
                         id="researchLab"
-                        required
-                        value={formData.researchLab}
-                        onChange={(e) => setFormData({ ...formData, researchLab: e.target.value })}
-                        style={{ width: "100%", padding: "0.8rem", border: "1px solid var(--border)", borderRadius: "4px", background: "white" }}
+                        disabled
+                        style={{ width: "100%", padding: "0.8rem", border: "1px solid var(--border)", borderRadius: "4px", background: "#f1f5f9", color: "var(--text-light)" }}
                       >
-                        <option value="" disabled>Select a Research Lab</option>
-                        {currentLabs.map((lab) => (
-                          <option key={lab} value={lab}>{lab}</option>
-                        ))}
+                        <option value="">Select an institution first</option>
+                      </select>
+                    );
+                  }
+
+                  if (currentLabs.length === 0) {
+                    return (
+                      <select
+                        id="researchLab"
+                        disabled
+                        style={{ width: "100%", padding: "0.8rem", border: "1px solid var(--border)", borderRadius: "4px", background: "#f1f5f9", color: "var(--text-light)" }}
+                      >
+                        <option value="No Approved Research Labs">No approved research labs for this institution</option>
                       </select>
                     );
                   }
                   
                   return (
-                    <input 
-                      type="text" 
-                      id="researchLab" 
-                      required 
-                      placeholder={!formData.collegeName ? "Select an institution first" : "e.g. Research Lab of Computer Science & Engineering"}
+                    <select
+                      id="researchLab"
+                      required
                       value={formData.researchLab}
                       onChange={(e) => setFormData({ ...formData, researchLab: e.target.value })}
-                      disabled={!formData.collegeName}
-                    />
+                      style={{ width: "100%", padding: "0.8rem", border: "1px solid var(--border)", borderRadius: "4px", background: "white" }}
+                    >
+                      <option value="" disabled>Select a Research Lab</option>
+                      {currentLabs.map((lab) => (
+                        <option key={lab} value={lab}>{lab}</option>
+                      ))}
+                    </select>
                   );
                 })()}
               </div>
