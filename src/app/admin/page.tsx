@@ -219,7 +219,7 @@ export default function AdminDashboard() {
   if (isLoading) return <div style={{ padding: "5rem", textAlign: "center" }}>Loading Dashboard...</div>;
 
   return (
-    <div style={{ background: "var(--bg-soft)", minHeight: "100vh", paddingTop: "var(--nav-height)", paddingBottom: "12rem" }}>
+    <div style={{ background: "var(--bg-soft)", minHeight: "100vh", paddingTop: "var(--nav-height)", paddingBottom: "30rem" }}>
       <header style={{ background: "var(--primary)", padding: "1.5rem 0", color: "white" }}>
         <div className="container" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <h2 style={{ margin: 0, color: "white" }}>Admin Dashboard</h2>
@@ -248,9 +248,17 @@ export default function AdminDashboard() {
         </div>
 
         {activeTab === "colleges" && (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "2rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "2rem", alignItems: "start" }}>
             {/* Add/Edit College Form */}
-            <div style={{ background: "white", padding: "2rem", borderRadius: "8px", boxShadow: "0 4px 6px rgba(0,0,0,0.05)", height: "fit-content" }}>
+            <div style={{ 
+              background: "white", 
+              padding: "2rem", 
+              borderRadius: "8px", 
+              boxShadow: "0 4px 6px rgba(0,0,0,0.05)", 
+              position: "sticky", 
+              top: "calc(var(--nav-height) + 2rem)",
+              zIndex: 10 /* Ensures it stays above the table */
+            }}>
               <h3 style={{ marginBottom: "1.5rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
                 {editingCollege ? (
                   <>
@@ -269,7 +277,18 @@ export default function AdminDashboard() {
                     required
                     value={newCountry}
                     onChange={(e) => setNewCountry(e.target.value)}
-                    style={{ width: "100%", padding: "0.8rem", border: "1px solid var(--border)", borderRadius: "4px", background: "white" }}
+                    style={{ 
+                      width: "100%", 
+                      padding: "0.8rem", 
+                      border: "1px solid var(--border)", 
+                      borderRadius: "4px", 
+                      background: "white",
+                      appearance: "none", /* Removes default arrow in some browsers */
+                      backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "right 0.8rem center",
+                      backgroundSize: "1em"
+                    }}
                   >
                     <option value="" disabled>Select a country</option>
                     {allCountries.map((country) => (
@@ -277,7 +296,7 @@ export default function AdminDashboard() {
                     ))}
                   </select>
                 </div>
-                <div style={{ marginBottom: "1.5rem" }}>
+                <div style={{ marginBottom: "12rem" }}> {/* Added significant bottom margin to create room for dropdown */}
                   <label style={{ display: "block", marginBottom: "0.5rem", fontSize: "0.9rem", fontWeight: 600 }}>College Name</label>
                   <input
                     type="text"
