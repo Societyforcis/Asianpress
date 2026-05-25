@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import { LogOut, Trash2, Plus, Filter, Users, School, Calendar, Edit } from "lucide-react";
+import { allCountries } from "@/lib/countries";
 
 interface College {
   _id: string;
@@ -46,14 +47,11 @@ export default function AdminDashboard() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalSubmissions, setTotalSubmissions] = useState(0);
 
-  const asianCountries = [
-    "Afghanistan", "Armenia", "Azerbaijan", "Bahrain", "Bangladesh", "Bhutan", "Brunei", "Cambodia", "China", "Cyprus", "Georgia", "India", "Indonesia", "Iran", "Iraq", "Israel", "Japan", "Jordan", "Kazakhstan", "Kuwait", "Kyrgyzstan", "Laos", "Lebanon", "Malaysia", "Maldives", "Mongolia", "Myanmar", "Nepal", "North Korea", "Oman", "Pakistan", "Palestine", "Philippines", "Qatar", "Saudi Arabia", "Singapore", "South Korea", "Sri Lanka", "Syria", "Taiwan", "Tajikistan", "Thailand", "Timor-Leste", "Turkey", "Turkmenistan", "United Arab Emirates", "Uzbekistan", "Vietnam", "Yemen", "Other"
-  ];
-
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   const fetchColleges = async () => {
+    setIsLoading(true);
     try {
       const res = await fetch("/api/colleges");
       if (res.status === 401) {
@@ -66,10 +64,13 @@ export default function AdminDashboard() {
       }
     } catch (err) {
       console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const fetchSubmissions = async () => {
+    setIsLoading(true);
     try {
       let url = `/api/submissions?page=${subPage}&limit=20&`;
       if (subFilterCountry) url += `country=${encodeURIComponent(subFilterCountry)}&`;
@@ -85,6 +86,8 @@ export default function AdminDashboard() {
       }
     } catch (err) {
       console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -269,7 +272,7 @@ export default function AdminDashboard() {
                     style={{ width: "100%", padding: "0.8rem", border: "1px solid var(--border)", borderRadius: "4px", background: "white" }}
                   >
                     <option value="" disabled>Select a country</option>
-                    {asianCountries.map((country) => (
+                    {allCountries.map((country) => (
                       <option key={country} value={country}>{country}</option>
                     ))}
                   </select>
@@ -417,7 +420,7 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              <div style={{ maxHeight: "600px", overflowY: "auto" }}>
+              <div>
                 <table style={{ width: "100%", borderCollapse: "collapse" }}>
                   <thead>
                     <tr style={{ background: "var(--bg-soft)", textAlign: "left" }}>
